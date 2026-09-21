@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# JAX / CSDL build artifacts
+*.hdf5
+jax_simulator.hdf5
+.jaxcache/
+
+# modopt writes solver output directories
+*_outputs/
+SLSQP_outputs/
+COBYQA_outputs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local scratch — keep experiments out of the repo until they are results
+scratch/
+*.log
