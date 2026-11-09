@@ -12,7 +12,6 @@ H_MAX = 84852.0       # geopotential m (86 km geometric)
  
  
 def _pressure(P_b, T_b, L_b, T, dh):
-    """Pressure a height dh above a layer base."""
     if L_b != 0.0:
         return P_b * (T_b / T) ** (G0 * M_AIR / (R_STAR * L_b))
     return P_b * np.exp(-G0 * M_AIR * dh / (R_STAR * T_b))
@@ -25,7 +24,6 @@ for i in range(len(H_B) - 1):
  
  
 def atmosphere_geopotential(h):
-    """(rho, T, P) at geopotential altitude h [m]."""
     if h < 0.0 or h > H_MAX:
         raise ValueError(f"h = {h:.1f} m is outside 0 to {H_MAX:.0f} m")
     i = max(j for j in range(len(H_B)) if h >= H_B[j])
@@ -86,21 +84,10 @@ GRAV0 = 9.81           # m/s^2, sea-level gravity
  
  
 def gravity(h):
-    """Inverse-square gravity at geometric altitude h [m]."""
     return GRAV0 * (RE_EARTH / (RE_EARTH + h)) ** 2
  
  
 def eom(t, state, Fv, Fn, M, A_ref, C_D, C_L, rho_fn=None):
-    """
-    Planar entry equations of motion over a spherical, non-rotating Earth.
- 
-    state = [V, gamma, h, beta]  (m/s, rad, m geometric, rad)
-    Fv, Fn = thrust along / normal to the flight path [N] at this instant
-             (the burn schedule is the caller's job; t is unused).
-    gamma is negative while descending.
-    rho_fn(h) -> density; defaults to the US76 model above, which raises above
-    86 km until the 86-125 km question is settled.
-    """
     V, gamma, h, beta = state
     rho = rho_fn(h) if rho_fn is not None else atmosphere(h)[0]
     g = gravity(h)
@@ -138,8 +125,6 @@ if __name__ == "__main__":
           f"{R_E * 86000.0 / (R_E + 86000.0):.1f} m")
     print("ALL PASS" if ok else "SOMETHING FAILED")
  
-    # eom consistency check (evaluates the function once, no integration):
-    # at circular speed, gamma = 0, no thrust, no lift, gamma_dot must be ~0
     h0 = 80000.0
     Vc = (gravity(h0) * (RE_EARTH + h0)) ** 0.5
     dV, dg, dh, db = eom(0.0, [Vc, 0.0, h0, 0.0], 0.0, 0.0, 7500.0, 78.54, 6.14, 0.0)
